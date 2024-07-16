@@ -1,22 +1,16 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Transferencia {
+export class Transaction {
 
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  // @ManyToOne(() => Conta, conta => conta.tranferencias)
-  // origem: Conta;
-
-  // @ManyToOne(() => Conta, conta => conta.tranferencias)
-  // destino: Conta;
-
   @Column({ type: 'double', nullable: false })
-  valor: number;
+  amount: number;
 
   @Column({ type: 'text', nullable: false })
-  tipo: string;
+  type: string;
 
   @CreateDateColumn()
   createdAt: string;

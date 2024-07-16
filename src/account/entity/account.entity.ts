@@ -13,12 +13,6 @@ export class Account {
   @Column({ type: 'double', default: 0 })
   balance: number;
 
-  // @ManyToOne(() => User, user => user.contas)
-  // user: User;
-
-  // @OneToMany(() => Transferencia, transferencia => transferencia.origem)
-  // tranferencias: Transferencia[]
-
   @CreateDateColumn()
   createdAt: string;
 

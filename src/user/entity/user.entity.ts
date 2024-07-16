@@ -13,13 +13,10 @@ export class User {
   email: string;
 
   @Column({ type: 'text', nullable: false, unique: true })
-  cpf: string;
+  document: string;
 
   @Column({ type: 'text', nullable: false })
   password: string;
-
-  // @OneToMany(() => Conta, conta => conta.user)
-  // contas: Conta[];
 
   @CreateDateColumn()
   createdAt: string;
