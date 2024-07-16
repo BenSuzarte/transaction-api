@@ -1,11 +1,14 @@
+import { Account } from "src/account/entity/account.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class User {
 
+  //Id
   @PrimaryGeneratedColumn('identity')
   id: number;
 
+  //Body
   @Column({ type: 'text', nullable: false })
   name: string;
 
@@ -18,10 +21,15 @@ export class User {
   @Column({ type: 'text', nullable: false })
   password: string;
 
+  //Relationship(s)
+  @OneToMany(() => Account, account => account.user)
+  accounts: Account[]
+
+  //Date(s)
   @CreateDateColumn()
-  createdAt: string;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: string;
+  updatedAt: Date;
 
 }
