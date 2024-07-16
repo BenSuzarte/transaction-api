@@ -1,7 +1,7 @@
 import { Account } from "src/account/entity/account.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity('users')
 export class User {
 
   //Id

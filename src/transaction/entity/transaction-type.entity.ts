@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Transaction } from "./transaction.entity";
 
-@Entity()
+@Entity('transactions_types')
 export class TransactionType {
 
   //Id

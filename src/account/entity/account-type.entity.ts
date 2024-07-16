@@ -1,7 +1,7 @@
 import { Account } from 'src/account/entity/account.entity';
 import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity('account_types')
 export class AccountType {
 
   //Id

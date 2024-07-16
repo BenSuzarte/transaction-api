@@ -3,7 +3,7 @@ import { User } from "src/user/entity/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { AccountType } from "./account-type.entity";
 
-@Entity()
+@Entity('accounts')
 export class Account {
 
   //Id

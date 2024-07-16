@@ -2,7 +2,7 @@ import { Account } from "src/account/entity/account.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TransactionType } from "./transaction-type.entity";
 
-@Entity()
+@Entity('transactions')
 export class Transaction {
 
   //Id
