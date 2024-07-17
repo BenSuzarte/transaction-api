@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entity/account.entity';
 import { Repository } from 'typeorm';
 import { AccountType } from './entity/account-type.entity';
-import { AccountTypeDTO } from './dto/account.dto';
+import { AccountTypeDTO, CreateAccountDTO } from './dto/account.dto';
 
 @Injectable()
 export class AccountService {
@@ -18,6 +18,22 @@ export class AccountService {
 
   ) {}
 
+  async createAccount( data: CreateAccountDTO ) {
+    const accountType = await this.getAccountTypeByName(data.type)
+
+    const newAccount = {
+      ...data,
+      code: String(Math.floor(Math.random() * 10001)),
+      type: accountType
+    };
+
+    return await this.accountRepository.save(this.accountRepository.create(newAccount));
+  }
+
+  async getAccounts() {
+    return await this.accountRepository.find();
+  }
+
   async createAccountType(data: AccountTypeDTO) {
     const newAccountType = { ...data } as AccountType;
     return await this.accountTypeRepository.save(this.accountTypeRepository.create(newAccountType));
@@ -25,6 +41,10 @@ export class AccountService {
 
   async getAccountTypes() {
     return await this.accountTypeRepository.find();
+  }
+
+  async getAccountTypeByName( type: string ) {
+    return await this.accountTypeRepository.findOne({ where: { type } });
   }
 
   async deleteAccountType(id: number) {

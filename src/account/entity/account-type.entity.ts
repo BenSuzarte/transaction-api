@@ -1,5 +1,5 @@
 import { Account } from 'src/account/entity/account.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('account_types')
 export class AccountType {
@@ -13,7 +13,7 @@ export class AccountType {
   type: string;
 
   //Relationship(s)
-  @ManyToOne(() => Account, account => account.type)
-  account: Account;
+  @OneToMany(() => Account, account => account.type)
+  account: Account[];
 
 }

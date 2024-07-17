@@ -22,7 +22,7 @@ export class User {
   password: string;
 
   //Relationship(s)
-  @OneToMany(() => Account, account => account.user)
+  @OneToMany(() => Account, account => account.user, { nullable: true })
   accounts: Account[]
 
   //Date(s)

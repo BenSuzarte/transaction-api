@@ -10,7 +10,7 @@ export class Transaction {
   id: number;
 
   //Body
-  @Column({ type: 'double', nullable: false })
+  @Column({ type: 'float', nullable: false })
   amount: number;
 
   //Relationship(s)

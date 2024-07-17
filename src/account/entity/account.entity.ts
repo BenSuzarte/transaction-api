@@ -14,14 +14,14 @@ export class Account {
   @Column({ type: 'text', nullable: false, unique: true })
   code: string;
 
-  @Column({ type: 'double', default: 0 })
+  @Column({ type: 'float', default: 0 })
   balance: number;
 
   //Relationship(s)
-  @OneToMany(() => AccountType, accountType => accountType.account, { nullable: false })
+  @ManyToOne(() => AccountType, accountType => accountType.account)
   type: AccountType;
 
-  @ManyToOne(() => User, user => user.accounts)
+  @ManyToOne(() => User, user => user.accounts, { nullable: false })
   user: User
 
   @OneToMany(() => Transaction, transaction => transaction.sender)

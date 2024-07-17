@@ -12,6 +12,11 @@ export class AccountController {
     return await this.accountService.createAccountType(body)
   }
 
+  @Get()
+  async getAllAccounts() {
+    return await this.accountService.getAccounts();
+  }
+
   @Get('types')
   async getTypes() {
     return await this.accountService.getAccountTypes()
