@@ -4,3 +4,7 @@ export interface SendTransactionDTO {
   receiver: string;
   type: string;
 }
+
+export interface CreateTransactionTypeDTO {
+  type: string
+}

@@ -2,13 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AccountModule } from './account/account.module';
-import { User } from './user/entity/user.entity';
 import { TransactionModule } from './transaction/transaction.module';
-import { Transaction } from './transaction/entity/transaction.entity';
-import { TransactionType } from './transaction/entity/transaction-type.entity';
-import { Account } from './account/entity/account.entity';
-import { AccountType } from './account/entity/account-type.entity';
 import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -26,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
       entities: [__dirname + "/**/*.entity{.js,.ts}"]
     }),
     
+    HttpModule,
     UserModule,
     AccountModule,
     TransactionModule

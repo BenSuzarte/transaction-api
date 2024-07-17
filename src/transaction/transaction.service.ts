@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, HttpException, Injectable, Not
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entity/transaction.entity';
 import { DataSource, Repository } from 'typeorm';
-import { SendTransactionDTO } from './dto/transaction.dto';
+import { CreateTransactionTypeDTO, SendTransactionDTO } from './dto/transaction.dto';
 import { AccountService } from 'src/account/account.service';
 import { TransactionType } from './entity/transaction-type.entity';
 
@@ -101,6 +101,10 @@ export class TransactionService {
 
   async getTransactionType(type: string) {
     return await this.transactionTypeRepository.findOne({ where: { type } });
+  }
+
+  async newTransactionType( data: CreateTransactionTypeDTO ) {
+    return await this.transactionTypeRepository.save(this.transactionTypeRepository.create(data));
   }
 
 }
