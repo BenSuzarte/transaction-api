@@ -50,9 +50,12 @@ export class TransactionService {
 
     } catch (error) {
 
-      console.log(error);
       await queryRunner.rollbackTransaction();
-      throw new NotImplementedException("Não foi possível realizar a transação");
+
+      if( error instanceof HttpException ) {
+        throw error
+      }
+      throw new NotImplementedException("Was not possible to proceed with the transaction");
 
     } finally {
       await queryRunner.release();

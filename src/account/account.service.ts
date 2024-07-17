@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entity/account.entity';
 import { Repository } from 'typeorm';
@@ -24,7 +24,14 @@ export class AccountService {
   }
 
   async getAccountTypes() {
-    return await this.accountTypeRepository.find()
+    return await this.accountTypeRepository.find();
+  }
+
+  async deleteAccountType(id: number) {
+    const result = await this.accountTypeRepository.delete(id)
+    if (result.affected === 0) {
+      throw new NotFoundException(`Account type with ID "${id}" not found`);
+    }
   }
 
   async findAccountByNumber( code: string ) {
