@@ -1,5 +1,5 @@
 import { Account } from 'src/account/entity/account.entity';
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('account_types')
 export class AccountType {
