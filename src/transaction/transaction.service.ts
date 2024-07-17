@@ -36,7 +36,10 @@ export class TransactionService {
         throw isValidTransaction;
       }
 
-      await this.accountService.transfer(sender, receiver, value);
+      const authorization = await this.accountService.transfer(sender, receiver, value);
+      if( authorization instanceof HttpException ) {
+        throw authorization
+      }
 
       const newTransaction = {
         amount: data.value,

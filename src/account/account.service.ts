@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entity/account.entity';
 import { Repository } from 'typeorm';
 import { AccountType } from './entity/account-type.entity';
 import { AccountTypeDTO, CreateAccountDTO } from './dto/account.dto';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AccountService {
@@ -14,7 +16,9 @@ export class AccountService {
     private readonly accountRepository: Repository<Account>,
 
     @InjectRepository(AccountType)
-    private readonly accountTypeRepository: Repository<AccountType>
+    private readonly accountTypeRepository: Repository<AccountType>,
+
+    private readonly httpService: HttpService
 
   ) {}
 
@@ -73,6 +77,12 @@ export class AccountService {
 
   async transfer( senderCode: string, receiverCode: string, value: number ) {
     await this.decrementBalance( senderCode, value );
+
+    const response = await firstValueFrom(this.httpService.get(process.env.CONFIRM_TRANSFER_API))
+    if( !response.status ) {
+      return new UnauthorizedException("This transaction was not authorized");
+    }
+
     await this.incrementBalance( receiverCode, value );
   }
 

@@ -4,7 +4,6 @@ import { UserModule } from './user/user.module';
 import { AccountModule } from './account/account.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { ConfigModule } from '@nestjs/config';
-import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -22,7 +21,6 @@ import { HttpModule } from '@nestjs/axios';
       entities: [__dirname + "/**/*.entity{.js,.ts}"]
     }),
     
-    HttpModule,
     UserModule,
     AccountModule,
     TransactionModule
