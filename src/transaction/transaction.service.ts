@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entity/transaction.entity';
 import { Repository } from 'typeorm';
@@ -19,32 +19,40 @@ export class TransactionService {
 
   async send(data: SendTransactionDTO) {
 
+    const isValidTransaction = await this.validate(data);
+
+    if( isValidTransaction instanceof HttpException ) {
+      throw isValidTransaction;
+    }
+
+  }
+
+  async validate(data: SendTransactionDTO) {
     const sender = await this.accountService.findAccountByNumber(data.sender);
 
     if( !sender ) {
-      throw new NotFoundException("This sender account wasn't found");
+      return new NotFoundException("This sender account wasn't found");
     }
 
     const senderAccountType = await this.accountService.getAccountTypeByNumber(data.sender)
 
     if( senderAccountType === "merchant" ) {
-      throw new ForbiddenException("Merchant accounts cannot perform transactions")
+      return new ForbiddenException("Merchant accounts cannot perform transactions")
     }
 
     if( data.value > sender.balance ) {
-      throw new ForbiddenException("Insufficient balance");
+      return new ForbiddenException("Insufficient balance");
     }
 
     if( data.value <= 0 ) {
-      throw new BadRequestException("Transaction amount must be greater than zero");
+      return new BadRequestException("Transaction amount must be greater than zero");
     }
 
     const receiver = await this.accountService.findAccountByNumber(data.receiver);
 
     if ( !receiver ) {
-      throw new NotFoundException("This receiver account wasn't found")
+      return new NotFoundException("This receiver account wasn't found")
     }
-
   }
 
 }

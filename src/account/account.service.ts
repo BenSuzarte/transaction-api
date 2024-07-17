@@ -13,12 +13,12 @@ export class AccountService {
 
   ) {}
 
-  async findAccountByNumber( number: string ) {
-    return await this.repository.findOne({ where: { number } });
+  async findAccountByNumber( code: string ) {
+    return await this.repository.findOne({ where: { code } });
   }
 
-  async getAccountTypeByNumber( number: string ) {
-    const account = await this.repository.findOne( { where: { number }, relations: ["type"] } );
+  async getAccountTypeByNumber( code: string ) {
+    const account = await this.repository.findOne( { where: { code }, relations: ["type"] } );
     return account ? account.type.type : null
   }
 

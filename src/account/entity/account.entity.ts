@@ -12,7 +12,7 @@ export class Account {
 
   //Body
   @Column({ type: 'text', nullable: false, unique: true })
-  number: string;
+  code: string;
 
   @Column({ type: 'double', default: 0 })
   balance: number;
