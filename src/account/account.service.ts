@@ -19,7 +19,20 @@ export class AccountService {
 
   async getAccountTypeByNumber( code: string ) {
     const account = await this.repository.findOne( { where: { code }, relations: ["type"] } );
-    return account ? account.type.type : null
+    return account ? account.type : null
+  }
+
+  async incrementBalance( code: string, amount: number ) {
+    return await this.repository.increment( { code }, 'balance', amount );
+  }
+
+  async decrementBalance( code: string, amount: number ) {
+    return await this.repository.decrement( { code }, 'balance', amount );
+  }
+
+  async transfer( senderCode: string, receiverCode: string, value: number ) {
+    await this.decrementBalance( senderCode, value );
+    await this.incrementBalance( receiverCode, value );
   }
 
 }

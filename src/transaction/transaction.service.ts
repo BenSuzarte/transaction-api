@@ -1,17 +1,21 @@
-import { BadRequestException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { BadRequestException, ForbiddenException, HttpException, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entity/transaction.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { SendTransactionDTO } from './dto/transaction.dto';
 import { AccountService } from 'src/account/account.service';
+import { TransactionType } from './entity/transaction-type.entity';
 
 @Injectable()
 export class TransactionService {
 
   constructor(
 
-    @InjectRepository(Transaction)
-    private readonly repository: Repository<Transaction>,
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+
+    @InjectRepository(TransactionType)
+    private readonly transactionTypeRepository: Repository<TransactionType>,
 
     private readonly accountService: AccountService
 
@@ -19,10 +23,39 @@ export class TransactionService {
 
   async send(data: SendTransactionDTO) {
 
-    const isValidTransaction = await this.validate(data);
+    const { sender, receiver, value } = data;
 
-    if( isValidTransaction instanceof HttpException ) {
-      throw isValidTransaction;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction()
+
+    try {
+      
+      const isValidTransaction = await this.validate(data);
+
+      if( isValidTransaction instanceof HttpException ) {
+        throw isValidTransaction;
+      }
+
+      await this.accountService.transfer(sender, receiver, value);
+
+      const newTransaction = {
+        amount: data.value,
+        ...isValidTransaction
+      } as Transaction;
+
+      const transaction = await queryRunner.manager.create(Transaction, newTransaction)
+
+      await queryRunner.commitTransaction();
+      return transaction;
+
+    } catch (error) {
+
+      console.log(error);
+      await queryRunner.rollbackTransaction();
+      throw new NotImplementedException("Não foi possível realizar a transação");
+
+    } finally {
+      await queryRunner.release();
     }
 
   }
@@ -36,8 +69,14 @@ export class TransactionService {
 
     const senderAccountType = await this.accountService.getAccountTypeByNumber(data.sender)
 
-    if( senderAccountType === "merchant" ) {
+    if( senderAccountType.type === "merchant" ) {
       return new ForbiddenException("Merchant accounts cannot perform transactions")
+    }
+
+    const transactionType = await this.getTransactionType(data.type);
+
+    if( !transactionType ) {
+      return new ForbiddenException("There isn't this transaction type");
     }
 
     if( data.value > sender.balance ) {
@@ -53,6 +92,12 @@ export class TransactionService {
     if ( !receiver ) {
       return new NotFoundException("This receiver account wasn't found")
     }
+
+    return { sender, receiver, type: transactionType };
+  }
+
+  async getTransactionType(type: string) {
+    return await this.transactionTypeRepository.findOne({ where: { type } });
   }
 
 }
